@@ -1,0 +1,36 @@
+#if !defined FUNCTIONS_H
+#define FUNCTIONS_H
+
+// === include ===
+// current folder
+#include "common.h"
+
+// === defines ===
+
+// === declaration ===
+void		fct_exit(TYPE_INT);
+TYPE_BYTE	fct_get_pressed_key(void);
+void		fct_con_set_size(const TYPE_UINT, const TYPE_UINT);
+
+TYPE_INT	fct_get_disk_free_space(void);
+
+TYPE_INT	fct_load_and_parse_csv(void);
+
+
+typedef struct {
+	const TYPE_BYTE * const	IN_CSV_line;
+	TYPE_BYTE * const		OUT_var_type;
+	size_t * const			OUT_idx;
+} parse_csv_line_params;
+TYPE_UINT	fct_parse_csv_line(const parse_csv_line_params * const);
+
+typedef struct {
+	void * const		arr_src;
+	const size_t		arr_size_bytes;
+	const size_t		byte_offset;
+	const void * const	set_value;
+	const size_t		set_value_size;
+} array_set_generic_params;
+TYPE_BYTE	fct_array_set_generic(const array_set_generic_params * const);
+
+#endif
