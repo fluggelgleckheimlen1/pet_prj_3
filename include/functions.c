@@ -107,8 +107,9 @@ TYPE_INT	fct_get_disk_free_space(void) {
 }
 
 
+
 //////////////////
-TYPE_INT	fct_load_and_parse_csv(void) {
+TYPE_INT	fct_load_and_parse_csv(const load_and_parse_csv_params * const p_p) {
 	// === declaration ===
 	FILE		*pointer_file_CSV;
 	TYPE_BYTE	tmp_arr_CSV_line[16] = {0};
@@ -119,6 +120,14 @@ TYPE_INT	fct_load_and_parse_csv(void) {
 	TYPE_BYTE	tmp_var_type = 0;
 
 	// === code ===
+	if (p_p == NULL ) {
+		return 0;	//	битый указатель на структуру
+	}
+
+	if (p_p -> matrix_rtn_src == NULL) {
+		return 0;	//	битые указатели
+	}
+
 	//	trying to open CSV file
 	pointer_file_CSV = fopen(DEF_file_name_CSV, "r");
 	if (pointer_file_CSV == NULL) {
@@ -135,8 +144,6 @@ TYPE_INT	fct_load_and_parse_csv(void) {
 		}
 	}
 
-	printf("INFO: opening and parsing CSV...\n");
-
 	while (fgets(tmp_arr_CSV_line, sizeof(tmp_arr_CSV_line), pointer_file_CSV) != NULL) {
 		//	проверяем, поместилась ли строка в буфер целиком - если в конце буфера нет символа '\n'
 		//	(и файл еще не кончился != NULL), значит строка была обрезана из-за превышения размера буфера
@@ -149,9 +156,17 @@ TYPE_INT	fct_load_and_parse_csv(void) {
 			.OUT_var_type = &tmp_var_type,
 			.OUT_idx      = &tmp_idx
 		})) {
-			printf("[%04u]\t%u\n", tmp_idx, tmp_var_type);
+			if (!fct_array_set_generic(&(array_set_generic_params){
+				.arr_src        = p_p -> matrix_rtn_src,
+				.arr_size_bytes = p_p -> matrix_rtn_size,
+				.byte_offset    = p_p -> matrix_rtn_elem_size * tmp_idx + 0,
+				.set_value      = &tmp_var_type,
+				.set_value_size = sizeof(tmp_var_type)
+			})) {
+				printf("WARNING: arr set failed\n");
+			}
 		} else {
-			printf("WARNING: skipping incorrect line %u\n", tmp_CSV_line_num);
+			printf("WARNING: skipping incorrect line %u\n", tmp_CSV_line_num + 1);
 		}
 
 		//	строка НЕ влезла целиком, счищаем её остаток до конца файла или до '\n'
@@ -247,6 +262,7 @@ TYPE_UINT	fct_parse_csv_line(const parse_csv_line_params * const p_p) {
 
 	return 1;
 }
+
 
 //////////////////
 TYPE_BYTE	fct_array_set_generic(const array_set_generic_params * const p_p) {
