@@ -8,12 +8,13 @@
 // === defines ===
 
 // === declaration ===
-void		fct_exit(TYPE_INT);
+void		fct_exit(const TYPE_INT);
 TYPE_BYTE	fct_get_pressed_key(void);
 void		fct_con_set_size(const TYPE_UINT, const TYPE_UINT);
 
 TYPE_INT	fct_get_disk_free_space(void);
 
+TYPE_INT	fct_load_bin(TYPE_rtn_cell * const);
 
 typedef struct {
 	TYPE_rtn_cell * const	matrix_rtn_src;
@@ -28,7 +29,7 @@ typedef struct {
 	TYPE_BYTE * const		OUT_var_type;
 	size_t * const			OUT_idx;
 } parse_csv_line_params;
-TYPE_UINT	fct_parse_csv_line(const parse_csv_line_params * const);
+TYPE_BYTE	fct_parse_csv_line(const parse_csv_line_params * const);
 
 
 typedef struct {
@@ -40,5 +41,8 @@ typedef struct {
 } array_set_generic_params;
 TYPE_BYTE	fct_array_set_generic(const array_set_generic_params * const);
 
+void		fct_print_table(TYPE_rtn_cell * const, const size_t);
+TYPE_BYTE	fct_print_BOOL(const void * const, const size_t);
+TYPE_BYTE	fct_print_HEX(const void * const, const size_t);
 
 #endif

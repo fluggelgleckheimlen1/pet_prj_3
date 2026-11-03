@@ -41,20 +41,14 @@ int main(void) {
 /* declaration */
 /* */
 /* */	TYPE_BOOL		flag_DATA_edit_disable = FALSE;
-/* */	TYPE_BOOL		fct_result_BOOL;
 /* */	TYPE_rtn_cell	*matrix_rtn_src;
-/* */	size_t			matrix_rtn_idx = 0;
-/* */	size_t			matrix_rtn_ofs = 0;
-/* */
-/* */	TYPE_UDINT		tmp_var = 0x80000003;
-/* */
-/* */	size_t			idx = 0, jdx = 0;
+/* */	TYPE_INT		rtn_cells_loaded = 0;
 /* */
 /* END declaration */
 /*******************/
 
 // === code ===
-//	fct_con_set_size(DEF_CON_COLS, DEF_CON_LINES);
+fct_con_set_size(DEF_CON_COLS, DEF_CON_LINES);
 SetConsoleTitleA(DEF_CONSOLE_TITLE);
 
 //	checking free space
@@ -70,7 +64,37 @@ if (matrix_rtn_src == NULL) {
 	fct_exit(1);
 }
 
+//	open BIN
+rtn_cells_loaded = fct_load_bin(matrix_rtn_src);
+if (rtn_cells_loaded < 0 ) {
+	fct_exit(2);
+}
 
+//	open and parse CSV
+if (fct_load_and_parse_csv(&(load_and_parse_csv_params){
+	.matrix_rtn_src = matrix_rtn_src,
+	.matrix_rtn_size = DEF_rtn_qntt * sizeof(TYPE_rtn_cell),
+	.matrix_rtn_elem_size = sizeof(TYPE_rtn_cell)
+}) < 0) {
+	fct_exit(3);
+}
+
+//	print result table
+fct_print_table(matrix_rtn_src, (size_t)rtn_cells_loaded);
+
+//	heap memory free
+free(matrix_rtn_src);
+//	destroy pointer after use
+matrix_rtn_src = NULL;
+
+fct_exit(0);
+return 0;
+}	// main()
+
+/*
+TYPE_BOOL		fct_result_BOOL;
+size_t			matrix_rtn_idx = 0;
+size_t			matrix_rtn_ofs = 0;
 
 matrix_rtn_idx = 0;
 matrix_rtn_ofs = 1;
@@ -84,37 +108,6 @@ fct_result_BOOL = fct_array_set_generic(&(array_set_generic_params){
 if (!fct_result_BOOL) {
 	printf("ERROR: array set failed\n");
 }
+*/
 
-
-//	open and parse CSV
-if (fct_load_and_parse_csv(&(load_and_parse_csv_params){
-	.matrix_rtn_src = matrix_rtn_src,
-	.matrix_rtn_size = DEF_rtn_qntt * sizeof(TYPE_rtn_cell),
-	.matrix_rtn_elem_size = sizeof(TYPE_rtn_cell)
-}) < 0) {
-	fct_exit(2);
-}
-
-
-
-printf("\nIDX\tTYPE\tVALUE\n");
-for (idx = 0; idx < 20; idx = idx + 1) {
-	printf("[%u]\t", idx);
-	printf("%02x\t", matrix_rtn_src[idx][0]);
-	for (jdx = 1; jdx < sizeof(TYPE_rtn_cell); jdx = jdx + 1) {
-		printf("%02x ", matrix_rtn_src[idx][jdx]);
-	}
-	printf("\n");
-}
-
-//	heap memory free
-free(matrix_rtn_src);
-//	destroy pointer after use
-matrix_rtn_src = NULL;
-
-
-fct_exit(0);
-
-return 0;
-}	// main()
 

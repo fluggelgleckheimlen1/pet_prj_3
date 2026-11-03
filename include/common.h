@@ -6,8 +6,9 @@
 #include <stdint.h>
 
 // === defines ===
-#define	DEF_CON_COLS		130U
-#define	DEF_CON_LINES		32U
+#define	DEF_CON_COLS		106U
+//#define	DEF_CON_LINES		32U
+#define	DEF_CON_LINES		70U
 
 #define	DEF_KEYS_SPECIAL	0xe0U
 #define	DEF_KEY_ARROW_UP	0x48U
@@ -15,8 +16,10 @@
 #define	DEF_KEY_ENTER		0x0dU
 #define	DEF_KEY_ESC			0x1bU
 
-#define	DEF_file_name_CSV	"rtn_data.csv"
+#define	DEF_file_name_CSV	"rtn_data01.csv"
+#define	DEF_file_name_BIN	"rtn_data01"
 #define	DEF_rtn_qntt		8192U
+#define	DEF_rtn_cell_size	8U
 
 // === declaration ===
 /*              0..2e64 - 1      */	typedef uint64_t	TYPE_ULINT;
@@ -28,6 +31,7 @@
 /*              0............255 */	typedef uint8_t		TYPE_USINT;
 /*           -128............127 */	typedef int8_t		TYPE_SINT;
 
+typedef uint64_t	TYPE_LWORD;
 typedef uint32_t	TYPE_DWORD;
 typedef uint16_t	TYPE_WORD;
 typedef uint8_t		TYPE_BYTE;
@@ -35,6 +39,6 @@ typedef uint8_t		TYPE_BOOL;
 
 extern const TYPE_BYTE	*var_types[];
 extern const size_t		var_types_qntt;
-typedef uint8_t			TYPE_rtn_cell[9];
+typedef TYPE_BYTE		TYPE_rtn_cell[9];
 
 #endif
